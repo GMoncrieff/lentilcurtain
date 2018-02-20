@@ -1,5 +1,5 @@
 # Site settings
-baseurl = "your_site_url_address"
+baseurl = "/"
 languageCode = "en"
 title = "Glenn Moncrieff"
 theme = "hugo-theme-cactus-plus"
