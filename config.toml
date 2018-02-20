@@ -1,9 +1,9 @@
 # Site settings
 baseurl = "/"
-languageCode = "en"
+languageCode = "en-us"
 title = "Glenn Moncrieff"
 theme = "hugo-theme-cactus-plus"
-googleAnalytics = "your_google_analytics_id"
+
 # Set the value to true if your site include CJK (Chinese, Japanese, and Korean languages) characters
 hasCJKLanguage = false
 
@@ -15,7 +15,7 @@ hasCJKLanguage = false
 	enableRSS = true
 	enableToc = true
 
-	enableDisqus = true
+	enableDisqus = false
 	disqusShortname = "your_disqus_short_name"
 
 
@@ -24,7 +24,7 @@ hasCJKLanguage = false
 	useDescriptionReplaceSummary = false
 
 
-	enableGoogleAnalytics = true
+	enableGoogleAnalytics = false
 	enableBaiduAnalytics = false
 	# Set the value to your baidu analysis code if you want to use baidu analytics
 	baiduAnalytics = 'your_baidu_analysis_code'
