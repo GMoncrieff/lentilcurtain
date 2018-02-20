@@ -53,4 +53,4 @@ blogdown::new_post()
 > *.Rhistory  
 > .Rproj.user/
 
-9. Create an account at [Netlify](http://www.netlify.com), it's free. Choose the option to create a new site from git, after loggining into your github account, select the repository containing your site.
+9. Create an account at [Netlify](http://www.netlify.com), it's free. Choose the option to create a new site from git, after loggining into your github account, select the repository containing your website. When prompted, choose to deploy the master brnach, and type `hugo` for build command and `public` for publish directory.

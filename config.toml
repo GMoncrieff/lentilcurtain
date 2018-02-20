@@ -74,3 +74,6 @@ hasCJKLanguage = false
 	twitter-square = "https://twitter.com/Glennwithtwons"
 	github-square = "https://github.com/GMoncrieff"
 	linkedin-square = "https://www.linkedin.com/in/glenn-moncrieff-54b905138"
+	
+[context.production.environment]
+  HUGO_VERSION = "0.36.1"
