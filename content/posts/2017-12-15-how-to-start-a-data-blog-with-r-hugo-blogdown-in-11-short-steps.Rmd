@@ -1,0 +1,56 @@
+---
+title: How to start a data blog with R + Hugo + Blogdown in 11 short steps
+author: Glenn
+date: '2017-12-15'
+slug: how-to-start-a-data-blog-with-r-hugo-blogdown-in-11-short-steps
+categories:
+  - R tutorial
+tags:
+  - R
+  - blogdown
+  - hugo
+---
+
+I just finished creating this blog to share stories, teach R skills, create environemtnal data stories, and most importantly - shamelessly self-promote. It makes sense to share with you a minimal formula for starting your own data blog with R.  
+
+Yihui Xie, the master behind Rmarkdown, has kindly created a graet framework for blogging with R - blogdown. Blogdown creates Hugo (one of the most popular open-source static site generators) websites, and allows you to write new content using markdown or Rmarkdown. This makes it really easy to create posts sharing R code and workflows. He has created a great, comprehensive guide available [here](https://bookdown.org/yihui/blogdown/). But the process s so simple you can achieve it in 11 simple steps:
+
+1.Create a new project in Rstudio in a new folder  
+  
+2.Install the blogdown package
+```{r eval=FALSE}
+install.packages("blogdown")
+```
+  
+3.Install Hugo (from within R)
+```{r eval=FALSE}
+blogdown::install_hugo()
+```
+
+4.Choose a theme for your blog from [https://themes.gohugo.io/](https://themes.gohugo.io/) - beware not all of them have been tested with blogdown  
+  
+5.Create your new site from this template. The string we use for the theme is the github site where the theme is hosted. The example below uses the hugo-academic theme hosted at [https://github.com/gcushen/hugo-academic](https://github.com/gcushen/hugo-academic)
+```{r eval=FALSE}
+blogdown::new_site(theme = "gcushen/hugo-academic")
+```
+  
+6.This will automatically download all the files for your site into your project folder. You can now start editing these files to customise your site. 
+ - Edit the `config.toml` file to change theme settings and general paramters of your site such as author, site description etc
+ - Add images that you will use to the folder `static/images` in your project home directory
+ - Edit your sites content by editing the pages within the `content` folder  in your project home directory. Here you can add new blog posts, or editing existing content
+   
+7. You can also add new blog posts using the handy Rstudio addin that comes with blogdown, just click `Tools > Addins > Browse Addins` and select `New Post`. You can specify the post title, dates, tags and categories using this tool.   
+The same functionality can be acheived using a blogdown function:
+
+```{r eval=FALSE}
+blogdown::new_post()
+```
+
+8. Now you have a website, you probably want to share it with others. First create a repo on github for your website. Then initialize your project folder and push it to that repo. You will want to create a `.gitgnore` to prevent unessasary files from being pushed to git. An example `.gitignore` would be:
+
+> public/  
+> *.Rproj    
+> *.Rhistory  
+> .Rproj.user/
+
+9. Create an account at [Netlify](http://www.netlify.com), it's free. Choose the option to create a new site from git, after loggining into your github account, select the repository containing your website. When prompted, choose to deploy the master brnach, and type `hugo` for build command and `public` for publish directory.
