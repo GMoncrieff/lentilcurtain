@@ -4,9 +4,7 @@ title = "About"
 hidden = true
 +++
 
-Hello World!
-
-My name is Glenn Moncrieff, I live in beautiful Cape Town, South Africa. I pass my time trying to think of smart ways of using data to solve problems. My favourite problems to solve are those that involve environmental protection or social justice. My most favourite problems to solve are those that involve the flora of South Africa, particulary the unquie and spectacular fynbos biome.  I divide my energy among a few challanges:
+My name is Glenn Moncrieff, I live in beautiful Cape Town, South Africa. I pass my time trying to think of smart ways of using data to solve problems. My favourite problems to solve are those that involve environmental protection or social justice. My most favourite problems to solve are those that involve the flora of South Africa, particulary the unique and spectacular fynbos biome.  I divide my energy among a few challanges:
 
 ## Data Science  
   

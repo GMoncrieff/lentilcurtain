@@ -1,0 +1,158 @@
+---
+title: Accessing Planet Labs data API from R
+author: 'Glenn '
+date: '2018-02-22'
+slug: accessing-planet-labs-data-api-from-r
+categories:
+  - R tutorial
+tags:
+  - Planet
+---
+
+
+
+<div id="planet-labs" class="section level2">
+<h2>Planet labs</h2>
+<p><a href="https://www.planet.com/">Planet labs</a> provides some amazing data for monitoring earth’s ecosystems. Their constellation of satellites provides panchromatic and multiband images of the entire earth almost daily, with spatial resolution down to 80cm. This is an amazing resource for monitoring ecosystems and global change impacts</p>
+<p>They offer a 14-day free trial, and you can apply for free usage if you wish to use the data for academic, or non-profit purposes.</p>
+</div>
+<div id="planet-shiny" class="section level2">
+<h2>Planet + Shiny</h2>
+<p>I recently I built a Shiny application that used Planet data to examine regions within the fynbos biome that are not behaving as would be expected if the vegetation was healthy. You can read more about this project <a href="www.ecologi.st/post/emma/">here</a>, and look at the code <a href="https://github.com/GMoncrieff/EMMA_shiny">here</a>.</p>
+</div>
+<div id="planet-data-api-mechanics" class="section level2">
+<h2>Planet data API mechanics</h2>
+<p>Access to the data is most convinient using their command line or Python tools, but to access the Planet data API from R I had to write some functions mimicing the Python API. In case you need to access the Planet data API from R, or what to include Planet data in a shiny application here is a little description of the function. It provides access to the search endpoint of the Planet data API. This API call will return the itemID of the Planet data that match the search critera. After getting these itemIDs we can ither download the binary data for further proceessing using the Planet data API download endpoint, or use the itemIDs to add the Planet data to an interactive map which will allow users to explore the region of interest, or even compare images taken at different dates. I have not written a function to access the data download API endpoint (I will get around to this), but after showing you the function to access itemIDs from the search API endpoint I will show you hwo to use these to add the Planet imagery to a leaflet map which you can interact with or - as I did - add to a Shiny application. You can read all about the mechanics of the Planet API <a href="https://www.planet.com/docs/reference">here</a></p>
+<p>Here is my function access the search endpoint</p>
+<pre class="r"><code># bbox = bounding box (shapefile) 
+# date_end = date of last image (date)
+# date_start = date of first image (date)
+# cloud_lim = cloud cover limit (double)
+# cover_lim = area coverage limit (double)
+# item_name = type of image (string)
+
+get_planet &lt;- function(bbox, date_end, date_start, cloud_lim=0.2, cover_lim=0.5, item_name=&quot;PSOrthoTile&quot;)
+  {
+    #convert shapefile to geojson
+    #shapefile of bounding box must be EPSG:4326 Projection
+  
+    geo_json_geometry &lt;- list(
+      type=jsonlite::unbox(&quot;Polygon&quot;),
+      coordinates = list(list(
+        c(bbox@xmin,
+          bbox@ymin),
+        c(bbox@xmin,
+          bbox@ymax),
+        c(bbox@xmax,
+          bbox@ymax),
+        c(bbox@xmax,
+          bbox@ymin),
+        c(bbox@xmin,
+          bbox@ymin)
+      ))
+    )
+    
+    
+    # filter for items the overlap with our chosen geometry
+    geometry_filter &lt;- list(
+      type= jsonlite::unbox(&quot;GeometryFilter&quot;),
+      field_name= jsonlite::unbox(&quot;geometry&quot;),
+      config= geo_json_geometry
+    )
+    
+    #we will search for images for up to a month beforethe date we are interested in 
+    
+    dategte &lt;- paste0(date_start,&quot;T00:00:00.000Z&quot;)
+    datelte &lt;- paste0(date_end,&quot;T00:00:00.000Z&quot;)
+    
+    # filter images by daterange
+    date_range_filter &lt;- list(
+      type= jsonlite::unbox(&quot;DateRangeFilter&quot;),
+      field_name= jsonlite::unbox(&quot;acquired&quot;),
+      config= list(
+        gte= jsonlite::unbox(dategte),
+        lte= jsonlite::unbox(datelte))
+      )
+    
+    # filter by cloud cover
+    cloud_cover_filter &lt;- list(
+      type= jsonlite::unbox(&quot;RangeFilter&quot;),
+      field_name= jsonlite::unbox(&quot;cloud_cover&quot;),
+      config = list(
+        lte= jsonlite::unbox(cover_lim))
+    )
+    
+    # filter by coverage of bounding box
+    coverage_filter &lt;- list(
+      type= jsonlite::unbox(&quot;RangeFilter&quot;),
+      field_name= unbox(&quot;usable_data&quot;),
+      config = list(
+        gte= jsonlite::unbox(cover_lim))
+    )
+    
+    # combine filters
+    filter_configs &lt;- list(
+      type= jsonlite::unbox(&quot;AndFilter&quot;),
+      config = list(date_range_filter, cloud_cover_filter,geometry_filter, coverage_filter)
+    )
+    
+    #build request
+    search_endpoint_request &lt;- list(
+      item_types = item_name,
+      filter = filter_configs
+    )
+    
+    #convert request to JSON
+    body_json &lt;- jsonlite::toJSON(search_endpoint_request,pretty=TRUE)
+    
+    #API request config 
+    url &lt;- &#39;https://api.planet.com/data/v1/quick-search&#39;
+    body &lt;- body_json
+    api_key &lt;- &quot;myapikey&quot;
+    
+    #send API request
+    request &lt;- httr::POST(url, body = body, content_type_json(), authenticate(api_key, &quot;&quot;))
+    
+    #get request content
+    response &lt;- httr::content(request)
+
+    return(response)
+}</code></pre>
+</div>
+<div id="planet-leaflet" class="section level2">
+<h2>Planet + leaflet</h2>
+<p>Let’s see how this works in the wild. I will use Planet data as the basemap for my leaflet map in R. First let’s create some data with which to call the planet API. We need a bounding box and some dates.</p>
+<pre class="r"><code>library(leaflet)
+library(lubridate)
+library(httr)
+library(jsonlite)
+library(XML)
+library(dplyr)
+
+#set date limits
+date_end &lt;- Sys.Date()
+date_start &lt;- today - years(1)
+
+#create a dummy raster and use its extent as bounding box
+my_raster&lt;-raster(nrows=100, ncols=100, xmn=20.0, xmx=20.01, ymn=-33.01, ymx=-33.0)
+bbox &lt;- extent(my_raster)
+
+#call API
+response &lt;- get_planet(bbox, date_end, date_start)</code></pre>
+<p>Now that I have a list of items that match my search criteria I can add the data to my interactive map. Often there will be multiple items that match our search criteria. we can access individual items using <code>response$features[[i]]</code> where <code>i</code> is the index of the item we want. Here I will just use the first item and add it to my map</p>
+<pre class="r"><code>#get item id of first item
+response_id &lt;- response$features[[1]]$id
+
+#create the string to send to XYZ Basemap Tile Service
+planet_string &lt;- paste0(
+      &quot;https://tiles.planet.com/data/v1/PSOrthoTile/&quot;,
+      response_id,
+      &quot;/{z}/{x}/{y}.png?api_key=myapikey&quot;)
+
+#create leaftlet map with planet basemap
+my_map = leaflet() %&gt;%
+         setView(lng = 20, lat = -33, zoom = 15) %&gt;%
+         addTiles(planet_string, attribution = &#39;Map data @2017 Planet&#39;)
+
+my_map</code></pre>
+</div>
