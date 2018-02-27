@@ -12,7 +12,7 @@ Mastering R, Python, Spark, Tensorflow etc. to equip myself with the skills to a
 
 ## Ecology  
   
-Spending time staring at plants in the field to understand their innermost thoughts. My research is focussed on linking plant ecology to the carbon and water cycles in Africa and the fynbos biome in particular. Often I find remote sensing and ecological models to be the tools best suited to these task. Find out more at [SAEON fynbos node](http://www.saeon-fynbos.org/) or visit my [Google Scholar](https://scholar.google.co.za/citations?user=_FFdaCUAAAAJ&hl=en&authuser=1) to see a list of my publications
+Spending time staring at plants in the field to understand their innermost thoughts. My research is focussed on linking plant ecology to the carbon and water cycles in Africa and the fynbos biome in particular. Often I find remote sensing and ecological models to be the tools best suited to these tasks. Find out more at [SAEON fynbos node](http://www.saeon-fynbos.org/) or visit my [Google Scholar](https://scholar.google.co.za/citations?user=_FFdaCUAAAAJ&hl=en&authuser=1) to see a list of my publications
 
 ## Teaching  
   
@@ -20,7 +20,7 @@ Spreading the gospel of open source software, open science, and data literacy. I
 
 ## Mountains/Oceans  
   
-When all the sciencing gets too much I escape to the mountains and oceans to surf, hike and rock climb. I try to share this passion with at-risk youth in Cape Town through a non-profit climbing club. We take youth climbing at the local gym, on trips to outdoor climbing spots and connect them with the local climbing community. Find out more at [DreamHigher](https://www.facebook.com/DreamHigherCT/)  
+When all the sciencing gets too much I escape to the mountains and oceans to surf, hike and rock climb. I try to share this passion with at-risk youth in Cape Town through a non-profit climbing club. We take youth climbing at the local gym, on trips to outdoor climbing spots and connect them with the local climbing community. Find out more at [DreamHigher](http://www.dreamhigher.co.za)  
    
  ***  
    
