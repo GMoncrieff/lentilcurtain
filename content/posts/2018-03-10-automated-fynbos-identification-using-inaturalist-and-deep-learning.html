@@ -1,0 +1,121 @@
+---
+title: 'Automated fynbos identification using iNaturalist and Deep Learning '
+author: Glenn Moncrieff
+date: '2018-03-10'
+slug: automated-fynbos-identification-using-inaturalist-and-deep-learning
+categories:
+  - R tutorial
+  - Python tutorial
+  - Neural Networks
+tags:
+  - Keras
+  - iNaturalist
+---
+
+
+
+<p>A lack of knowledge of neural networks has probably been one of the biggest gaps in my data science skillset. I decided to rectify this last year and did some online courses and reading to try get up to spead on simple neural networks, and more complex architecture such as Convolutional Neural Networks and Recurrent Neural Networks. I am really excited by the oppurtunities these new methods can offer ecology, and already have a number of cool project fizzing in my brain.</p>
+<p>Armed with a basic understanding of how these things work. I decided to have a go at my first real-world application. Any ecologist working in the wonderous Fynbos biome can attest to my frustration at trying to identify which of the more than 9000 possilbe species of plants they are currenly holding in their hand. I am particulary rubbish at this task, but I am less rubbish at data science. Therefore I came about this project of trying to compensate for my poor botany skills by building a Neural Network that can automatically identify fynbos plant species from photos.</p>
+<div id="step-1-getting-the-data" class="section level3">
+<h3>Step 1: Getting the Data</h3>
+<p>Getting photos of plants with confirmed ID’s can be a painstaking process. Luckily the a vast collection of images of fynbos plants taken by amatuer naturalists with confimred ID’s has recently become available on <a href="https://www.inaturalist.org/">iNaturalist</a>. The best thing about this amazing resource (if you are a data scientist), is that it provides comprehensive access to all it’s data through a REST API. Even better is that there a simple R package <a href="https://github.com/ropensci/rinat">rinat</a> through whcih the API can be called from R. For the beta version of my fynbos plant ID neural network. I will just obtain photos of Proteas and Restios, two of the most common and iconic plant groups in the fynbos biomes, and try to distinguosh among these two groups. In case you are totally unfamiliar with these plants groups</p>
+<p>Here is a Restio (family Restionaceae): <img src="/images/Elegia_filacea_ronald_flipphi.jpeg" alt="Elegia filacea photo: Ronald Flipphi CC BY-NC"> <em>Elegia filacea. photo: Ronald Flipphi CC BY-NC</em></p>
+<p>Here is a Protea (genus Protea): <img src="/images/protea_eximia_gawie_malan.jpg" alt="Protea eximia. photo: Gawie Malan CC BY-NC"> <em>Protea eximia. photo: Gawie Malan CC BY-NC</em></p>
+<p>To download images of family Restionaceae and genus <em>Protea</em> within a bounding box of the fynbos biome</p>
+<pre class="r"><code>#load rinit library
+library(rinat)
+
+setwd(&quot;~/science/image_net&quot;)
+
+#rough bounding box for the fynbos biome
+bounds &lt;- c(-32.86,20,-34.3,24)
+
+#call iNaturalist API
+Proteas &lt;- get_inat_obs(taxon_name = &quot;Protea&quot;,bounds=bounds)
+Restios &lt;- get_inat_obs(taxon_name = &quot;Restionaceae&quot;,bounds=bounds)
+
+
+#download the images for each group to a local file
+#restios
+for (i  in length(Restios$image_url):1){
+  download.file(url = Restios$image_url[i],destfile = paste0(&quot;~/science/image_net/Data/restio/restio_&quot;,Restios$id[i],&quot;.jpg&quot;),method=&quot;libcurl&quot;)
+}
+
+#proteas
+for (i  in 1:length(Proteas$image_url)){
+download.file(url = Proteas$image_url[i],destfile = paste0(&quot;~/science/image_net/Data/protea/protea_&quot;,i,&quot;.jpg&quot;),method=&quot;libcurl&quot;)
+}</code></pre>
+<p>and just like that I have 100 images with confirmed identification for various Proteas and 100 images with confirmed identification for Restios. We could have more images, the iNaturalist just limits us to 100 results per request The next step of the analysis expects the files to be stored in a specific stucture like this</p>
+<pre><code>## /Users/glennmoncrieff/science/image_net/Data
+## ├── train
+## │   ├── protea
+## │   └── restio
+## └── validation
+##     ├── protea
+##     └── restio
+## 
+## 6 directories</code></pre>
+</div>
+<div id="step-2-train-the-neural-network" class="section level3">
+<h3>Step 2: Train the Neural Network</h3>
+<p>I used a Convolotional Neural Network (CNN) to model the images. This type of Neural Network is commonly used for images analysis. I also transfer learning to build my model on top of a pre-trained CNN fitted to a large dataset of images. Transfer learning used predefined network structures with fixed weights to improve the fit of models of small datasets. The logic is that these pretrained models, designed by very smart people and fitted to giant datasets, have ‘learnt’ the simple structure of images and can already identify features such as edges and corners. These features are captured in the basal layers of the network, which we inherit. To obtain a good fit to our data all we then do is add a few layers on top of the pretrained network that use the features it already knows to match our classes.</p>
+<p>The dataset of 200 images of Proteas and Restios is not a particularly large dataset on which to train a CNN. To address this I used a technique called ‘image augmentation’. Essentailly what it does is perform a series of transformations to our image dataset such as flippng, shifting, rescaling, zooming etc. to create new images which we can add to our dataset. I am not going to give you the full details here. You can read the tutorial on how to do this by François Chollet on the <a href="https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html">Keras Blog</a>, you can also find the full code that I used for model fitting on my <a href="">GitHub</a>. Model fitting was done using Keras 2.0 with tensorflow backend in python 2.7</p>
+<p><img src="/images/image_acc.png" alt="Model fitting"> <em>Fitting the Proteas vs Restios image classifier with Keras 2.0</em></p>
+<p>After fine tuning these results a bit more the final model gives us about 80% accuracy. This is not exceptional - it is not going to replace a botanist just yet. But when you take a look at how diverse the images it is trying to identify are:</p>
+<p><img src="/images/r_col.png" alt="Some Restios in the validation dataset"> <em>Some Restios in the validation dataset</em></p>
+<p><img src="/images/p_col.png" alt="Some Proteas in the validation dataset"> <em>Some Proteas in the validation dataset</em></p>
+<p>it is actually quite impressive. If we had a little standardization in the way we photographed the plants I think we could be getting 95% plus. An interesting side thought would be to train the classifier sperately for image of flowers and images of vegetative plant material. “But how would we label images as flowers or vegetative” you may ask. With a Neural Network of course.</p>
+</div>
+<div id="step-3-predict-new-images" class="section level3">
+<h3>Step 3: Predict new images</h3>
+<p>Finally now that we have a trained model saved we can write a simple Python script that will load the model, and classify it as ‘Protea’ or ‘Restio’ given an image file.</p>
+<pre class="python"><code>#!/usr/bin/python
+
+import sys
+import warnings
+warnings.filterwarnings(&quot;ignore&quot;)
+from keras.models import load_model
+from keras.models import Sequential
+import cv2
+import numpy as np 
+
+#load saved model
+model = load_model(&#39;proteas_final.h5&#39;)
+
+photo = str(sys.argv[1])
+
+#resize and classify image
+def fynbos_id(model, photo):
+    img = cv2.imread(photo).astype(np.float32) / 255
+    img = cv2.resize(img, (150, 150))
+    img = np.expand_dims(img, axis=0)
+    classes = model.predict(img)
+    if classes &lt;0.5:
+        sp_id = &quot;Protea&quot;
+    else:
+        sp_id = &quot;Restio&quot;      
+    return sp_id;
+
+#print result
+print(fynbos_id(model,photo))</code></pre>
+<p>Lets try with a few new images not in either the training or validation set:</p>
+<p><img src="/images/test_01.jpg" alt="test_01.jpg"> <em>test_01.jpg</em></p>
+<pre class="bash"><code>python proteas_predict_single.py test_01.jpg</code></pre>
+<p>returns…. <code>Restio</code></p>
+<div id="yay" class="section level4">
+<h4>Yay!</h4>
+<p><img src="/images/test_02.jpg" alt="test_02.jpg"> <em>test_02.jpg</em></p>
+<pre class="bash"><code>python proteas_predict_single.py test_02.jpg</code></pre>
+<p>returns…. <code>Protea</code></p>
+</div>
+<div id="yay-1" class="section level4">
+<h4>Yay!</h4>
+<p><img src="/images/test_03.jpg" alt="test_03.jpg"> <em>test_03.jpg</em></p>
+<pre class="bash"><code>python proteas_predict_single.py test_03.jpg</code></pre>
+<p>returns…. <code>Protea</code></p>
+</div>
+<div id="hmmm" class="section level4">
+<h4>Hmmm</h4>
+<p>so it’s not perfect, but not bad for a start. We need to addmmore images to the training and validation set to improve this model and maybe be more careful with the types of images we used. But overall I think I have succeeded in this proof of concept. In the final stage of this workflow I will serve this model through a REST API using Python flask hosted on AWS. Look ou for this in my next blog post</p>
+</div>
+</div>
