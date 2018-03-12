@@ -1,24 +1,24 @@
 ---
 title: 'Automated fynbos identification using iNaturalist and Deep Learning '
-author: Glenn Moncrieff
+author: "Glenn Moncrieff"
 date: '2018-03-10'
 slug: automated-fynbos-identification-using-inaturalist-and-deep-learning
-categories:
-  - R tutorial
-  - Python tutorial
-  - Neural Networks
 tags:
-  - Keras
-  - iNaturalist
+- Keras
+- iNaturalist
+categories:
+- R tutorial
+- Python tutorial
+- Neural Networks
 ---
 
-A lack of knowledge of neural networks has probably been one of the biggest gaps in my data science skillset. I decided to rectify this last year and did some online courses and reading to try get up to spead on simple neural networks, and more complex architecture such as Convolutional Neural Networks and Recurrent Neural Networks. I am really excited by the opportunities these new methods can offer ecology, and already have a number of cool projects fizzing in my brain. 
+A lack of knowledge of neural networks has probably been one of the biggest gaps in my data science skillset. I decided to rectify this last year and did some online courses and reading to try get up to speed on simple neural networks, and more complex architecture such as Convolutional Neural Networks and Recurrent Neural Networks. I am really excited by the opportunities these new methods can offer ecology, and already have a number of cool projects fizzing in my brain. 
 
-Armed with a basic understanding of how these things work. I decided to have a go at my first real-world application. Any ecologist working in the wonderous fynbos biome can attest to my frustration at trying to identify which of the more than 9000 possilbe species of plants they are currenly holding in their hand. I am particulary rubbish at this task, but I am less rubbish at data science. Therefore I came about this project of trying to compensate for my poor botany skills by building a Neural Network that can automatically identify fynbos plant species from photos.
+Armed with a basic understanding of how these things work. I decided to have a go at my first real-world application. Any ecologist working in the wonderous fynbos biome can attest to my frustration at trying to identify which of the more than 9000 possible species of plants they are currenly holding in their hand. I am particulary rubbish at this task, but I am less rubbish at data science. Therefore I came about this project of trying to compensate for my poor botany skills by building a Neural Network that can automatically identify fynbos plant species from photos.
 
 ### Step 1: Getting the Data
 
-Getting photos of plants with confirmed ID's can be a painstaking process. Luckily a vast collection of images of fynbos plants taken by amatuer naturalists with confimred ID's has recently become available on [iNaturalist](https://www.inaturalist.org/). The best thing about this amazing resource (if you are a data scientist), is that it provides comprehensive access to all it's data through a REST API. Even better is that there is a simple R package [rinat](https://github.com/ropensci/rinat) through which the API can be called from R. For the beta version of my fynbos plant ID neural network I will just obtain photos of Proteas and Restios, two of the most common and iconic plant groups in the fynbos biomes, and try to distinguosh among these groups. In case you are totally unfamiliar with these plants groups 
+Getting photos of plants with confirmed ID's can be a painstaking process. Luckily a vast collection of images of fynbos plants taken by amatuer naturalists with confirmed ID's has recently become available on [iNaturalist](https://www.inaturalist.org/). The best thing about this amazing resource (if you are a data scientist), is that it provides comprehensive access to all it's data through a REST API. Even better is that there is a simple R package [rinat](https://github.com/ropensci/rinat) through which the API can be called from R. For the beta version of my fynbos plant ID neural network I will just obtain photos of Proteas and Restios, two of the most common and iconic plant groups in the fynbos biome, and try to distinguish among these groups. In case you are totally unfamiliar with these plant groups 
   
 Here is a Restio (family Restionaceae):
 <img src="/images/Elegia_filacea_ronald_flipphi.jpeg" alt="Elegia filacea photo: Ronald Flipphi CC BY-NC"> _Elegia filacea. photo: Ronald Flipphi CC BY-NC_  
@@ -54,15 +54,15 @@ download.file(url = Proteas$image_url[i],destfile = paste0("~/science/image_net/
 }
 ```
 
-and just like that I have 100 images with confirmed identification for various Proteas and 100 images with confirmed identification for Restios. We could have more images, iNaturalist just limits us to 100 results per request The next step of the analysis expects the files to be stored in a specific stucture like this
+and just like that I have 100 images with confirmed identification for various Proteas and 100 images with confirmed identification for Restios. We could have more images, iNaturalist just limits us to 100 results per request. The next step of the analysis expects the files to be stored in a specific stucture like this
 ```{bash, echo=FALSE}
 tree -d /Users/glennmoncrieff/science/image_net/Data
 ```
 
 ### Step 2: Train the Neural Network
-I used a Convolotional Neural Network (CNN) to model the images. This type of Neural Network is commonly used for images analysis. This article on [DataCamp](https://www.datacamp.com/community/tutorials/convolutional-neural-networks-python) give a great onto to CNN's. I also used transfer learning to build my model on top of a pre-trained CNN fitted to a large dataset of images. Transfer learning uses predefined network structures with fixed weights to improve the fit of models on small datasets. Learn more about transfer learning at [DataCamp](https://www.datacamp.com/community/tutorials/transfer-learning) The logic is that these pretrained models, designed by very smart people and fitted to giant datasets, have 'learnt' the simple structure of images and can already identify features such as edges and corners. These features are captured in the basal layers of the network, which we inherit. To obtain a good fit to our data all we then do is add a few layers on top of the pretrained network that use the features it already knows to match our classes.
+I used a Convolotional Neural Network (CNN) to model the images. This type of Neural Network is commonly used for images analysis. This article on [DataCamp](https://www.datacamp.com/community/tutorials/convolutional-neural-networks-python) give a great intro to CNN's. I also used transfer learning to build my model on top of a pre-trained CNN fitted to a large dataset of images. Transfer learning uses predefined network structures with fixed weights to improve the fit of models on small datasets. Learn more about transfer learning at [DataCamp](https://www.datacamp.com/community/tutorials/transfer-learning). The logic is that these pretrained models, designed by very smart people and fitted to giant datasets have 'learnt' the simple structure of images and can already identify features such as edges and corners. These features are captured in the basal layers of the network, which we inherit. To obtain a good fit to our data all we then do is add a few layers on top of the pretrained network that use the features it already knows to match our classes.
 
-The dataset of 200 images of Proteas and Restios is not a particularly large dataset on which to train a CNN. To address this I used a technique called 'image augmentation'. Essentailly what it does is perform a series of transformations to our image dataset such as flippng, shifting, rescaling, zooming etc. to create new images which we can add to our dataset. I am not going to give you the full details here. You can read the tutorial on how to do this by François Chollet on the [Keras Blog](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html), you can also find the full code that I used for model fitting on my [GitHub](https://github.com/GMoncrieff/protea_image). Model fitting was done using Keras 2.0 with tensorflow backend in python 2.7
+The dataset of 200 images of Proteas and Restios is not a particularly large dataset on which to train a CNN. To address this I used a technique called 'image augmentation'. Essentailly what this does is perform a series of transformations to our image dataset such as flipping, shifting, rescaling, zooming etc. to create new images which we can add to our dataset. I am not going to give you the full details here. You can read the tutorial on how to do this by François Chollet on the [Keras Blog](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html), you can also find the full code that I used for model fitting on my [GitHub](https://github.com/GMoncrieff/protea_image). Model fitting was done using Keras 2.0 with tensorflow backend in Python 2.7
 
 <img src="/images/image_acc.png" alt="Model fitting">
 *Fitting the Proteas vs Restios image classifier with Keras 2.0*
@@ -79,7 +79,7 @@ it is actually quite impressive. If we had a little standardization in the way w
 
 ### Step 3: Predict new images
 
-Finally now that we have a trained model saved we can write a simple Python script that will load the model, and classify it as 'Protea' or 'Restio' given an image file.
+Finally, now that we have a trained model saved we can write a simple Python script that will load the model, and classify it as 'Protea' or 'Restio' given an image file.
 
 ```{python eval=FALSE}
 #!/usr/bin/python
@@ -147,4 +147,4 @@ returns....
 `Protea`
 
 #### Hmmm
-so it's not perfect, but not bad for a start. We need to add more images to the training and validation set to improve this model and maybe be more careful with the types of images we use to trai with. But overall I think I have succeeded in this proof of concept. In the final stage of this workflow I will serve this model through a REST API using Python flask hosted on AWS. Look out for this in my next blog post
+so it's not perfect, but not bad for a start. We need to add more images to the training and validation set to improve this model and maybe be more careful with the types of images we use to train with. But overall I think I have succeeded in this proof of concept. In the final stage of this workflow I will serve this model through a REST API using Python flask hosted on AWS. Look out for this in my next blog post.
