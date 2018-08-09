@@ -8,7 +8,7 @@ My name is Glenn Moncrieff, I live in beautiful Cape Town, South Africa. I pass 
 
 ## Data Science  
   
-Mastering R, Python, Spark, Tensorflow etc. to equip myself with the skills to apply the most advanced tech to the challenges I tackle. Find out more at [ixio analytics](http://www.ixioanalytics.com)
+Mastering R, Python, Spark, Tensorflow etc. to equip myself with the skills to apply the most advanced tech to the challenges I tackle.
 
 ## Ecology  
   
