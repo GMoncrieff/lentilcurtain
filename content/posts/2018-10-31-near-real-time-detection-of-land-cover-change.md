@@ -33,14 +33,13 @@ Using the processed surface reflectance data I calculate a measure of vegetation
 
 These data are the basis upon which we detect land transformation using an algorithm called BFAST (Breaks For Additive Season and Trend). BFast works by defining in a period in which we know vegetation to be stable and not subject to transformation. The trends and behavour of NDVI through time within this period are used to build of model of what the expected pattern ought to look like if this vegetation where to continue to function similarly. We then project expected NDVI patterns into the future and compare these to new data as they are acquired. 
 
-![bfast](/images/bf1.jpg "bfast")
+<img src="images/bf1.jpg" alt="bfast" width="200"/>
 
-If the new data excceds our expectation by some threshold we flag this as an anomaly and a potential case of land cover change.
+If the new data exceeds our expectation by some threshold we flag this as an anomaly and a potential case of land cover change.
 
-![bfast](/images/bf2.jpg "bfast")
+<img src="images/bf2.jpg" alt="bfast" width="200"/>
 
-
-This is the procedure that was followed using the Sentinel 2 and Planet data. We build models using data up to the 31st of December 2018 and monitored from chagen from the 1st of Januray 2018 onwards. Using the Planet data I was able to detect the land transfomation we were interested in within 1 to 2 days of it's occurence! The breakpoint is detected on day 33 of the year - or the 2nd of Feb. Remember the raw images showed the change occurring on the the 1st. This is what the actual data look lik:e
+This is the procedure that was followed using the Sentinel 2 and Planet data. We build models using data up to the 31st of December 2018 and monitored change from the 1st of Januray 2018 onwards. Using the Planet data I was able to detect the land transformation we were interested in within 1 to 2 days of it's occurence! The breakpoint is detected on day 33 of the year - or the 2nd of Feb. Remember the raw images showed the change occurring on the the 1st. This is what the actual data look like:
 
 ![bfast_planet](/images/pl_bf.jpg "bfast_planet")
 
@@ -50,7 +49,7 @@ Running this over the whole area of interest shows how we can accurately outline
 
 This process is not perfect. You can see how we outline some areas that have not been transformed, and similarly it is likely that we will fail to detect some areas that have been cleared.
   
-It takes around a month after clearing to detect the event using Sentinel data, but it also provides a good outline of areas that have chagne during the monitoreing period. By the 13th of March clearing had been accurately detected in the areas we are concered with, and an addiotnal areas to the north that I ha not been previously aware of.
+It takes around a month after clearing to detect the event using Sentinel data, but it also provides a good outline of areas that have changed during the monitoring period. By the 13th of March clearing had been accurately detected in the areas we are concered with, and an additional area to the north that I had not been previously aware of.
 
 <iframe frameborder="0" class="juxtapose" width="100%" height="540" src="https://cdn.knightlab.com/libs/juxtapose/latest/embed/index.html?uid=eb4db728-dcf7-11e8-9dba-0edaf8f81e27"></iframe>
 
