@@ -24,38 +24,37 @@ Enforcement authorities have reported high rates of illgeal vegetation clearing 
 
 ![thicket clearing](/images/pl_gif.gif "thicket clearing")
 
-All the code to reproduce my analysis is available at this github repo. But her eis a quick brekadown fo how I went about this:
-First I downloaded all the data availalbe for this area for Planet and Sentinel 2 from when their records began until the 31st of March - about 2 months after the clearing event). This amounts to about 2 years of data for each. In the end I had around 120 images to analyse from Planet and 50 from Sentinel 2. THen I need to correct the raw data from level 1 data, or what the sensor sees at the top of the atmospehre, to surfacne reflectacen - what the earths surface looks like without the interference of the atmospehre. this is done by correcting the data for the effects of things like clouds, haze, the varyin agnle and intensity of the sun's illuminations, and topography. Fortuantly PLanet have done this for me already and I can simply download their surface reflectance data. Sentinel provide a tool SEn2Cor which you can run on level 1 imagery to calculate surface refelcetacne. 
-Then using the processed surface reflectance data I calucate a measure of vegetation greeness caleed NDVI or Normalized Vegetation difference Index. NDVI is a measure of hw much photosynthietic activty there is. A high NDVI value (near 1) indivcate lush vegetation like a forest, a low value (around 0.2) indicated bare soil. A sudden drop in NDVI indicate a reduction in photosynthesis, and may be related to vegetation loss.
-Nown what I have is a stack of images fof NDVI for a seires of dates across the region I wish to monitor
+All the code to reproduce my analysis is available at [this github repo](https://github.com/GMoncrieff/thicket_monitoring). But here is a quick breakdown of how I went about this:
+  
+First I downloaded all the data available for this area from Planet and Sentinel 2 from when their records began until the 31st of March 2018 - about 2 months after the clearing event. This amounts to about 2 years of data for each. In the end I had around 120 images to analyse from Planet and 50 from Sentinel 2. Then I needed to correct the raw data from level 1 data, or what the sensor sees at the top of the atmosphere, to surface reflectance - what the earth's surface looks like without the interference of the atmosphere. This is done by correcting the data for the effect of things like clouds, haze, the varying angle and intensity of the sun's illumination, and topography. Fortunatly Planet have done this for me already and I can simply download their [surface reflectance data](https://assets.planet.com/marketing/PDF/Planet_Surface_Reflectance_Technical_White_Paper.pdf). Sentinel provide a tool [Sen2Cor](http://step.esa.int/main/third-party-plugins-2/sen2cor/) which you can run on level 1 imagery to calculate surface reflectance. 
+Using the processed surface reflectance data I calculate a measure of vegetation greeness called NDVI or Normalized Vegetation difference Index. NDVI is a measure of how much photosynthetic activity there is. A high NDVI value (near 1) indicsate lush vegetation like a forest, while a low value (around 0.2) indicates bare soil. A sudden drop in NDVI suggests a reduction in photosynthesis, and may be related to vegetation loss. After downloaed all the data, processing it to surface refelctance and calculating NDVI I end up with a stack of images of NDVI for a series of dates across the region I wish to monitor.
 
 ![ndvi](/images/stack.jpg "ndvi stack")
 
-These data are the basis upon which we detect land transformation using an algoritmth called BFAST (Breaks For Additive Season and Trend). BFast works by defining in aperiod in which we know vegetation to be stable and not subject to transformation. The trends and behavour of NDVI through time within this period is used to build of model of what the expectated pattern ought to look like if this vegetation where to continue to function similarly. 
+These data are the basis upon which we detect land transformation using an algorithm called BFAST (Breaks For Additive Season and Trend). BFast works by defining in a period in which we know vegetation to be stable and not subject to transformation. The trends and behavour of NDVI through time within this period are used to build of model of what the expected pattern ought to look like if this vegetation where to continue to function similarly. We then project expected NDVI patterns into the future and compare these to new data as they are acquired. 
 
-image
+![bfast](/images/bf1.jpg "bfast")
 
-we then project expected NDVI patterns into the future and compare these to new data as they are acquired. 
+If the new data excceds our expectation by some threshold we flag this as an anomaly and a potential case of land cover change.
 
-image
+![bfast](/images/bf2.jpg "bfast")
 
-If the new data excceds our expectation by some threshold we flag this as an anomlay and a potenital case of land cover change.
 
-image
+This is the procedure that was followed using the Sentinel 2 and Planet data. We build models using data up to the 31st of December 2018 and monitored from chagen from the 1st of Januray 2018 onwards. Using the Planet data I was able to detect the land transfomation we were interested in within 1 to 2 days of it's occurence! The breakpoint is detected on day 33 of the year - or the 2nd of Feb. Remember the raw images showed the change occurring on the the 1st. This is what the actual data look lik:e
 
-THis is the procdudre that was followed using the Sentinel 2 and Planet data. We build models usig data up to the 31st of december 2018 and monitored from chagen from the 1st of Jaunray 2018 onwards. Using the Planet data I was able to detect the land transfomation we were interested in within 1 to 2 days of it's occuerence! This is what the actual data look like. The breakpoint is detected on day 33 of the year - or the 2nd of Feb. Remember the raw images showed the change ocrrruing onthe the 1st.
+![bfast_planet](/images/pl_bf.jpg "bfast_planet")
 
-image
-
-Running the over the whole area of intered shows how we can accuratly outline the clearing and automate the detecint of aras that are cleared. This porcess is not perfect. You can see how we outline some araeas that have not been transofmred, and simialry it is likely that we will fail to detect some areas that have been cleared.
+Running this over the whole area of interest shows how we can accurately outline the clearing and automate the detection of areas that are cleared. The timelapse shows when the detection occurs by highlighting the cleared area - a day after it occurs!.
 
 ![thicket clearing2](/images/pl_gif2.gif "thicket clearing")
 
+This process is not perfect. You can see how we outline some areas that have not been transformed, and similarly it is likely that we will fail to detect some areas that have been cleared.
+  
 It takes around a month after clearing to detect the event using Sentinel data, but it also provides a good outline of areas that have chagne during the monitoreing period. By the 13th of March clearing had been accurately detected in the areas we are concered with, and an addiotnal areas to the north that I ha not been previously aware of.
 
 <iframe frameborder="0" class="juxtapose" width="100%" height="540" src="https://cdn.knightlab.com/libs/juxtapose/latest/embed/index.html?uid=eb4db728-dcf7-11e8-9dba-0edaf8f81e27"></iframe>
 
-I think this is really promising. Satellite imagery has advacned enrouemly in the last few year. We are now at a point where we have the imageyry avaialbe to identify land cover change within days of it's occurence. Of cousre it is not possible to manulayy search thourgh images and comapre each day, thus we need algorithms like those I have demonstared to help with this process. I dont think we can fully automate this, there will always be the need for humans inth e loop to confirm detectjon ands theow away flase positives. We have some grants that are currently being reveiwed in whih we prosed to further develop this technology and roll it out over large areas. Ifnthings comes together you will see this approach in a thciket near you soon.
+I think this is really promising. Satellite imagery has advanced enormously in the last few years. We are now at a point where we have the imagery availabe to identify land cover change within days of it's occurence. Of course it is not possible to manually search through images and compare each day, thus we need algorithms like those I have demonstrated to help with this process. I dont think we can fully automate this, there will always be the need for humans in the loop to confirm detection and throw away false positives. We have some grants that are currently being reviewed in which we proposed to further develop this technology and roll it out over large areas. If things come together you will see this approach in a thicket near you soon.
 
 
 
