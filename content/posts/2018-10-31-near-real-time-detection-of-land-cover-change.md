@@ -33,11 +33,11 @@ Using the processed surface reflectance data I calculate a measure of vegetation
 
 These data are the basis upon which we detect land transformation using an algorithm called BFAST (Breaks For Additive Season and Trend). BFast works by defining in a period in which we know vegetation to be stable and not subject to transformation. The trends and behavour of NDVI through time within this period are used to build of model of what the expected pattern ought to look like if this vegetation where to continue to function similarly. We then project expected NDVI patterns into the future and compare these to new data as they are acquired. 
 
-<img src="/images/bf1.jpg" alt="bfast" width="200"/>
+<img src="/images/bf1.jpg" alt="bfast" width="100"/>
 
 If the new data exceeds our expectation by some threshold we flag this as an anomaly and a potential case of land cover change.
 
-<img src="/images/bf2.jpg" alt="bfast" width="200"/>
+<img src="/images/bf2.jpg" alt="bfast" width="100"/>
 
 This is the procedure that was followed using the Sentinel 2 and Planet data. We build models using data up to the 31st of December 2018 and monitored change from the 1st of Januray 2018 onwards. Using the Planet data I was able to detect the land transformation we were interested in within 1 to 2 days of it's occurence! The breakpoint is detected on day 33 of the year - or the 2nd of Feb. Remember the raw images showed the change occurring on the the 1st. This is what the actual data look like:
 
