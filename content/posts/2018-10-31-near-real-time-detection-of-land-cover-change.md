@@ -20,16 +20,16 @@ I set out to test how rapidly land transformation could be detected using these 
 
 ![Albany Thicket](/images/thicket.jpg "The Albany thicket biome")
 
-Enforcement authorities have reported high rates of illgeal vegetation clearing across the biome, but an area of particular concern surrounds the town of Alexandria near Port Elizabeth, where patches of thicket and forest undistubred for thousands of years are being cleared for diary pasture at an alarming rate.  I identified a small area where a patch of vegetation had recently been cleared and set my self the task of attempting to automate the detection of this change within days of it's occurence. Here you can see a timelapse covwering the period from the 23rd of January 2018 to the 3rd of Februay. From this imagey is is apparetnt that the vegetation was cleared around the 1st of February. (Disclaimer: I make no allegation about legality of this vegetation clearing. It is possible that what this farmer did is entirely legal) 
+Enforcement authorities have reported high rates of illgeal vegetation clearing across the biome, but an area of particular concern surrounds the town of Alexandria near Port Elizabeth, where patches of thicket and forest undistubred for thousands of years are being cleared for diary pasture at an alarming rate.  I identified a small area where a patch of vegetation had recently been cleared and set my self the task of attempting to automate the detection of this change within days of it's occurence. Here you can see a timelapse covwering the period from the 23rd of January 2018 to the 2nd of Februay. From this imagey is is apparetnt that the vegetation was cleared around the 1st of February. (Disclaimer: I make no allegation about legality of this vegetation clearing. It is possible that what this farmer did is entirely legal) 
 
-<video width="960" height="540" src="https://storage.googleapis.com/planet-t2/alex_demo-ekBrsNxiR/movie.mp4" />
+![thicket clearing](/images/pl_gif.gif "thicket clearing")
 
 All the code to reproduce my analysis is available at this github repo. But her eis a quick brekadown fo how I went about this:
 First I downloaded all the data availalbe for this area for Planet and Sentinel 2 from when their records began until the 31st of March - about 2 months after the clearing event). This amounts to about 2 years of data for each. In the end I had around 120 images to analyse from Planet and 50 from Sentinel 2. THen I need to correct the raw data from level 1 data, or what the sensor sees at the top of the atmospehre, to surfacne reflectacen - what the earths surface looks like without the interference of the atmospehre. this is done by correcting the data for the effects of things like clouds, haze, the varyin agnle and intensity of the sun's illuminations, and topography. Fortuantly PLanet have done this for me already and I can simply download their surface reflectance data. Sentinel provide a tool SEn2Cor which you can run on level 1 imagery to calculate surface refelcetacne. 
 Then using the processed surface reflectance data I calucate a measure of vegetation greeness caleed NDVI or Normalized Vegetation difference Index. NDVI is a measure of hw much photosynthietic activty there is. A high NDVI value (near 1) indivcate lush vegetation like a forest, a low value (around 0.2) indicated bare soil. A sudden drop in NDVI indicate a reduction in photosynthesis, and may be related to vegetation loss.
 Nown what I have is a stack of images fof NDVI for a seires of dates across the region I wish to monitor
 
-(insert iamge)
+![ndvi](/images/stack.jpg "ndvi stack")
 
 These data are the basis upon which we detect land transformation using an algoritmth called BFAST (Breaks For Additive Season and Trend). BFast works by defining in aperiod in which we know vegetation to be stable and not subject to transformation. The trends and behavour of NDVI through time within this period is used to build of model of what the expectated pattern ought to look like if this vegetation where to continue to function similarly. 
 
@@ -49,11 +49,11 @@ image
 
 Running the over the whole area of intered shows how we can accuratly outline the clearing and automate the detecint of aras that are cleared. This porcess is not perfect. You can see how we outline some araeas that have not been transofmred, and simialry it is likely that we will fail to detect some areas that have been cleared.
 
-image
+![thicket clearing2](/images/pl_gif2.gif "thicket clearing")
 
-It takes around a month after clearing to detect the event using Sentinel data, but it also provides a good outline of areas that have chagne during the monitoreing period. By the 31st of March clearing had been accurately detected in the areas we are concered with, and an addiotnal areas to the north that I ha not been previously aware of.
+It takes around a month after clearing to detect the event using Sentinel data, but it also provides a good outline of areas that have chagne during the monitoreing period. By the 13th of March clearing had been accurately detected in the areas we are concered with, and an addiotnal areas to the north that I ha not been previously aware of.
 
-image
+<iframe frameborder="0" class="juxtapose" width="100%" height="540" src="https://cdn.knightlab.com/libs/juxtapose/latest/embed/index.html?uid=eb4db728-dcf7-11e8-9dba-0edaf8f81e27"></iframe>
 
 I think this is really promising. Satellite imagery has advacned enrouemly in the last few year. We are now at a point where we have the imageyry avaialbe to identify land cover change within days of it's occurence. Of cousre it is not possible to manulayy search thourgh images and comapre each day, thus we need algorithms like those I have demonstared to help with this process. I dont think we can fully automate this, there will always be the need for humans inth e loop to confirm detectjon ands theow away flase positives. We have some grants that are currently being reveiwed in whih we prosed to further develop this technology and roll it out over large areas. Ifnthings comes together you will see this approach in a thciket near you soon.
 
