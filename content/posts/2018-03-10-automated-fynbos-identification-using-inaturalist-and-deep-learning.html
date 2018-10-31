@@ -46,15 +46,6 @@ for (i  in 1:length(Proteas$image_url)){
 download.file(url = Proteas$image_url[i],destfile = paste0(&quot;~/science/image_net/Data/protea/protea_&quot;,i,&quot;.jpg&quot;),method=&quot;libcurl&quot;)
 }</code></pre>
 <p>and just like that I have 100 images with confirmed identification for various Proteas and 100 images with confirmed identification for Restios. We could have more images, iNaturalist just limits us to 100 results per request. The next step of the analysis expects the files to be stored in a specific stucture like this</p>
-<pre><code>## /Users/glennmoncrieff/science/image_net/Data
-## ├── train
-## │   ├── protea
-## │   └── restio
-## └── validation
-##     ├── protea
-##     └── restio
-## 
-## 6 directories</code></pre>
 </div>
 <div id="step-2-train-the-neural-network" class="section level3">
 <h3>Step 2: Train the Neural Network</h3>
@@ -70,7 +61,6 @@ download.file(url = Proteas$image_url[i],destfile = paste0(&quot;~/science/image
 <h3>Step 3: Predict new images</h3>
 <p>Finally, now that we have a trained model saved we can write a simple Python script that will load the model, and classify it as ‘Protea’ or ‘Restio’ given an image file.</p>
 <pre class="python"><code>#!/usr/bin/python
-
 import sys
 import warnings
 warnings.filterwarnings(&quot;ignore&quot;)
@@ -78,12 +68,9 @@ from keras.models import load_model
 from keras.models import Sequential
 import cv2
 import numpy as np 
-
 #load saved model
 model = load_model(&#39;proteas_final.h5&#39;)
-
 photo = str(sys.argv[1])
-
 #resize and classify image
 def fynbos_id(model, photo):
     img = cv2.imread(photo).astype(np.float32) / 255
@@ -95,7 +82,6 @@ def fynbos_id(model, photo):
     else:
         sp_id = &quot;Restio&quot;      
     return sp_id;
-
 #print result
 print(fynbos_id(model,photo))</code></pre>
 <p>Lets try with a few new images not in either the training or validation set:</p>

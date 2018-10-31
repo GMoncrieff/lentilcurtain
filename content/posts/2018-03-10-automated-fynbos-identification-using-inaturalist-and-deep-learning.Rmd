@@ -55,7 +55,7 @@ download.file(url = Proteas$image_url[i],destfile = paste0("~/science/image_net/
 ```
 
 and just like that I have 100 images with confirmed identification for various Proteas and 100 images with confirmed identification for Restios. We could have more images, iNaturalist just limits us to 100 results per request. The next step of the analysis expects the files to be stored in a specific stucture like this
-```{bash, echo=FALSE}
+```{bash, echo=FALSE, eval=F}
 tree -d /Users/glennmoncrieff/science/image_net/Data
 ```
 
