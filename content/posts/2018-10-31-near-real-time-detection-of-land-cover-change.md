@@ -1,5 +1,5 @@
 ---
-title: Near-Real time detection of land cover change
+title: Real-time detection of land cover change
 author: Glenn Moncrieff
 date: '2018-10-31'
 slug: near-real-time-detection-of-land-cover-change
