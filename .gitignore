@@ -3,5 +3,6 @@ public/
 *.Rhistory
 *.pptx
 .Rproj.user/
+.ipynb_checkpoints/
 .DS_Store
 .Rproj.user
