@@ -1,13 +1,14 @@
 ---
-title: Wiped off the map: historical aerial photos document the communities erased by Apartheid
-author: Glenn
-date: '2019-09-23'
-slug: wiped-off-the-map
+title: 'Wiped off the map: historical aerial photos document the communities erased
+  by Apartheid'
+author: Glenn Moncrieff
+date: '2019-09-24'
+slug: wiped-off-the-map-historical-aerial-photos-document-the-communities-erased-by-apartheid
 categories: []
-tags: 
+tags:
   - Apartheid
-  - Aerial Photos
-  - Cape Town
+  - Aerial photos
+  - History
 ---
 ```{r echo=FALSE}
 library(leaflet)
