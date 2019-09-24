@@ -1,6 +1,6 @@
 ---
-title: Wiped off the map - historical aerial photos document how Apartheid tried to erase entire communities
-author: ~
+title: Wiped off the map: historical aerial photos document how Apartheid tried to erase entire communities
+author: Glenn
 date: '2019-09-24'
 slug: wiped-off-the-map
 categories: []
